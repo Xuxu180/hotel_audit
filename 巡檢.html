@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>富翔大飯店 - 周邊環境維護巡檢</title>
+    <style>
+        body { font-family: 'Arial', sans-serif; padding: 20px; background-color: #f4f4f9; }
+        .container { max-width: 400px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #333; }
+        label { display: block; margin-top: 15px; font-weight: bold; }
+        input[type="text"], select, textarea { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .checkbox-group { margin-top: 5px; }
+        button { width: 100%; padding: 12px; margin-top: 20px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; }
+        button:hover { background-color: #45a049; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>環境維護巡檢表</h2>
+    <form id="auditForm">
+        <label for="name">巡檢人員</label>
+        <input type="text" id="name" name="name" required placeholder="請輸入姓名">
+
+        <label for="area">巡檢區域</label>
+        <select id="area" name="area" required>
+            <option value="">請選擇區域</option>
+            <option value="飯店正門與人行道">飯店正門與人行道</option>
+            <option value="停車場周邊">停車場周邊</option>
+            <option value="側邊巷弄與水溝">側邊巷弄與水溝</option>
+        </select>
+
+        <label>完成項目 (可複選)</label>
+        <div class="checkbox-group">
+            <input type="checkbox" name="item" value="垃圾撿拾"> 垃圾撿拾<br>
+            <input type="checkbox" name="item" value="落葉清掃"> 落葉清掃<br>
+            <input type="checkbox" name="item" value="水溝積水清除"> 水溝積水清除<br>
+            <input type="checkbox" name="item" value="植栽澆水與整理"> 植栽澆水與整理
+        </div>
+
+        <label for="note">異常狀況與備註 (若無請填無)</label>
+        <textarea id="note" name="note" rows="3" required>無</textarea>
+
+        <button type="submit">送出紀錄</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('auditForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // 收集勾選的項目
+        let items = [];
+        document.querySelectorAll('input[name="item"]:checked').forEach((checkbox) => {
+            items.push(checkbox.value);
+        });
+
+        // 準備傳送的資料
+        const formData = new URLSearchParams();
+        formData.append('name', document.getElementById('name').value);
+        formData.append('area', document.getElementById('area').value);
+        formData.append('items', items.join(', '));
+        formData.append('note', document.getElementById('note').value);
+
+        // 將下方的 URL 替換成你剛剛複製的 Google Apps Script 網址
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbyK487mJuS5DdB41S28y5DmoNplvJn7DUL326ye5E-zPB4uJECOodJGAn9Igh6xavUrtA/exec';
+
+        fetch(scriptURL, { method: 'POST', body: formData })
+            .then(response => {
+                alert('紀錄已成功送出！感謝您的維護。');
+                document.getElementById('auditForm').reset();
+            })
+            .catch(error => alert('發生錯誤，請稍後再試！'));
+    });
+</script>
+
+</body>
+</html>
